@@ -32,6 +32,9 @@ class NestedMutableList(TrackedList, Mutable):
 
 class NestedMutable(Mutable):
     """SQLAlchemy `mutable` extension with nested change tracking."""
+    MUTABLE_DICT_TYPE = NestedMutableDict
+    MUTABLE_LIST_TYPE = NestedMutableList
+
     @classmethod
     def coerce(cls, key, value):
         """Convert plain dictionary to NestedMutable."""
@@ -40,9 +43,9 @@ class NestedMutable(Mutable):
         if isinstance(value, cls):
             return value
         if isinstance(value, dict):
-            return NestedMutableDict.coerce(key, value)
+            return cls.MUTABLE_DICT_TYPE.coerce(key, value)
         if isinstance(value, list):
-            return NestedMutableList.coerce(key, value)
+            return cls.MUTABLE_LIST_TYPE.coerce(key, value)
         return super(cls).coerce(key, value)
 
 
